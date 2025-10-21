@@ -2,7 +2,7 @@ from model.paciente import Paciente
 from conexion.oracle_queries import OracleQueries
 from datetime import date, datetime
 
-class Controller_Paciente:
+class ControllerPaciente:
     # Classe responsável por controlar as operações de CRUD da entidade paciente.
     def __init__(self):
         pass
