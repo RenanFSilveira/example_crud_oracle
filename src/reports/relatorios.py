@@ -33,3 +33,9 @@ class Relatorio:
 
     def get_relatorio_consultas_detalhado(self):     
         return self._run("relatorio_consultas_detalhado.sql")
+    
+    def get_relatorio_sumarizacao(self):    
+        return self._run("relatorio_consultas_por_medico.sql")
+    
+    def get_relatorio_juncao(self):    
+        return self._run("relatorio_consultas_detalhado.sql")

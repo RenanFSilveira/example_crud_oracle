@@ -10,5 +10,5 @@ SELECT
   c.observacoes
 FROM Consulta c
 JOIN Paciente p ON p.id_paciente = c.id_paciente
-JOIN Medico   m ON m.crm         = c.crm
-ORDER BY c.data_hora DESC;
+JOIN Medico   m ON m.crm         = c.crm_medico
+ORDER BY c.data_hora DESC

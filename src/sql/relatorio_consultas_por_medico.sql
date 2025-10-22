@@ -7,8 +7,8 @@ SELECT
   MAX(c.data_hora)                AS ultima_consulta
 FROM Medico m
 LEFT JOIN Consulta c
-       ON c.crm = m.crm
+       ON c.crm_medico = m.crm
 GROUP BY
   m.crm, m.nome, m.especialidade
 ORDER BY
-  total_consultas DESC, m.nome;
+  total_consultas DESC, m.nome

@@ -30,9 +30,11 @@ def reports(opcao_relatorio:int=0):
     if opcao_relatorio == 1:
         # 1 - Consultas por Especialidade (Sumarização)
         relatorio.get_relatorio_sumarizacao() 
+        input("Digite qualquer tecla para continuar.")
     elif opcao_relatorio == 2:
         # 2 - Consultas Agendadas Detalhadas (Junção)
         relatorio.get_relatorio_juncao() 
+        input("Digite qualquer tecla para continuar.")
     elif opcao_relatorio == 0:
         return
     else:
