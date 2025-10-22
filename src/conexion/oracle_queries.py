@@ -10,7 +10,7 @@
 #                  (3) https://cx-oracle.readthedocs.io/en/latest/index.html
 ###########################################################################
 import json
-import oracledb
+import cx_Oracle
 from pandas import DataFrame
 
 class OracleQueries:
@@ -29,7 +29,7 @@ class OracleQueries:
         if self.cur:
             self.close()
 
-    def connectionString(self, in_container:bool=False):
+    def connectionString(self, in_container:bool=True):
         '''
         Esse método cria uma string de conexão utilizando os parâmetros necessários
         Parameters:
@@ -40,12 +40,12 @@ class OracleQueries:
         return: string de conexão
         '''
         if not in_container:
-            string_connection = oracledb.makedsn(host=self.host,
+            string_connection = cx_Oracle.makedsn(host=self.host,
                                                 port=self.port,
                                                 sid=self.sid
                                                 )
         elif in_container:
-            string_connection = oracledb.makedsn(host=self.host,
+            string_connection = cx_Oracle.makedsn(host=self.host,
                                                 port=self.port,
                                                 service_name=self.service_name
                                                 )
@@ -59,16 +59,16 @@ class OracleQueries:
         - password: senha do usuário criado para utilização do banco de dados
         - dsn: string de conexão para acessar o banco de dados oracle
         - enconding: codificação de caracteres para não haver erros com caracteres em português
-        return: um cursor que permite utilizar as funções da biblioteca oracledb
+        return: um cursor que permite utilizar as funções da biblioteca cx_Oracle
         '''
 
-        self.conn = oracledb.connect(user=self.user,
+        self.conn = cx_Oracle.connect(user=self.user,
                                       password=self.passwd,
                                       dsn=self.connectionString()
                                      )
         self.cur = self.conn.cursor()
         return self.cur
-    
+
     def sqlToDataFrame(self, query:str) -> DataFrame:
         '''
         Esse método irá executar uma query
