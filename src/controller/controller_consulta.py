@@ -60,6 +60,9 @@ class ControllerConsulta:
     def inserir_consulta(self) -> Consulta:
         """
         Insere uma nova Consulta. Requer a existência prévia de Médico e Paciente.
+        
+        CORREÇÃO: O ID da consulta é GENERATED ALWAYS, portanto não deve ser incluído 
+        na instrução INSERT. O valor é recuperado após a inserção.
         """
         oracle = OracleQueries(can_write=True)
         oracle.connect()
@@ -93,18 +96,23 @@ class ControllerConsulta:
 
         observacoes = input("Observações (Opcional): ")
         
-        # 4. Obtém o próximo ID da SEQUENCE
-        id_consulta_temp = oracle.sqlToDataFrame("SELECT consulta_id_seq.NEXTVAL AS novo_id FROM DUAL").iloc[0,0]
+        # 4. **REMOVIDO** - Não é mais necessário obter o ID da sequência, 
+        #    pois o ID é GENERATED ALWAYS AS IDENTITY pelo Oracle.
 
         # 5. Insere a Consulta (Concatenação de Query SQL)
-        # Atenção: Passa o ID do Paciente e o CRM do Médico, não os objetos.
-        query = f"INSERT INTO Consulta (id_consulta, crm_medico, id_paciente, data_hora, observacoes) VALUES ("
-        query += f"{id_consulta_temp}, '{medico.get_crm()}', {paciente.get_id_paciente()}, "
+        # IMPORTANTE: A coluna id_consulta foi OMITIDA do INSERT.
+        query = f"INSERT INTO Consulta (crm_medico, id_paciente, data_hora, observacoes) VALUES ("
+        query += f"'{medico.get_crm()}', {paciente.get_id_paciente()}, "
         query += f"TO_TIMESTAMP('{data_hora_str}', 'DD/MM/YYYY HH24:MI'), '{observacoes}')"
 
         oracle.write(query)
         
-        # 6. Cria e retorna o objeto Consulta (Usando as instâncias de objeto recuperadas)
+        # 6. Recupera o ID gerado pelo Oracle para criar o objeto Python.
+        # ATENÇÃO: Em ambiente multi-usuário, o ideal é usar RETURNING INTO. 
+        # Para um ambiente de teste simples, MAX(ID) geralmente funciona.
+        id_consulta_temp = oracle.sqlToDataFrame("SELECT MAX(id_consulta) AS novo_id FROM Consulta").iloc[0,0]
+
+        # 7. Cria e retorna o objeto Consulta (Usando as instâncias de objeto recuperadas)
         nova_consulta = Consulta(
             id_consulta_temp, 
             paciente, # Objeto Paciente

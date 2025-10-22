@@ -36,29 +36,27 @@ class ControllerPaciente:
             # Telefone
             telefone = input("Telefone (Ex: 99999-9999): ")
 
-            # 4. Obtém o próximo ID da SEQUENCE (Para Oracle, a sintaxe de SEQUENCE é usada)
-            # Sintaxe: SELECT NOME_DA_SEQUENCE.NEXTVAL FROM DUAL
-            
-            # NOTE: Assumindo que a sequence se chama paciente_id_seq e a tabela é Paciente
-            # Uso de iloc[0,0] para obter o valor da primeira célula do DataFrame
-            id_paciente_temp = oracle.sqlToDataFrame("SELECT paciente_id_seq.NEXTVAL AS novo_id FROM DUAL").iloc[0,0]
+            # 4. REMOVIDO: Não é mais necessário obter o ID da sequence!
+            # O Oracle irá gerar o ID automaticamente.
 
-            # 5. Insere e persiste o novo Paciente (Conforme o edital, usando concatenação)
-            # Todos os campos são inseridos, exceto o id_paciente, que usa o valor da sequence.
-            query = f"INSERT INTO Paciente (id_paciente, nome, data_nascimento, cpf, telefone) VALUES ("
-            query += f"{id_paciente_temp}, '{nome}', TO_DATE('{data_nascimento_str}', 'DD/MM/YYYY'), '{cpf}', '{telefone}')"
+            # 5. Insere e persiste o novo Paciente
+            # IMPORTANTE: Removida a coluna id_paciente da lista de colunas!
+            query = f"INSERT INTO Paciente (nome, data_nascimento, cpf, telefone) VALUES ("
+            query += f"'{nome}', TO_DATE('{data_nascimento_str}', 'DD/MM/YYYY'), '{cpf}', '{telefone}')"
 
             oracle.write(query)
             
-            # 6. Recupera os dados do Paciente criado para criar o Objeto
-            df_paciente = oracle.sqlToDataFrame(f"SELECT id_paciente, nome, data_nascimento, cpf, telefone FROM Paciente WHERE id_paciente = {id_paciente_temp}")
+            # 6. Recupera o ID gerado automaticamente para criar o Objeto
+            # No Oracle, a função IDENTITY é uma forma de obter o ID gerado pelo último insert.
+            # O correto é usar RETURNING ID_PACIENTE INTO <variavel>, mas vamos fazer via SELECT
+            # Busque pelo CPF, pois ele é UNIQUE e foi usado no INSERT.
+            df_paciente = oracle.sqlToDataFrame(f"SELECT id_paciente, nome, data_nascimento, cpf, telefone FROM Paciente WHERE cpf = '{cpf}'")
             
             # 7. Cria e retorna o objeto Paciente
-            # OBS: O DataFrame pode retornar o tipo de dado original, ajustar a criação do objeto
             novo_paciente = Paciente(
                 df_paciente.id_paciente.values[0], 
                 df_paciente.nome.values[0], 
-                df_paciente.data_nascimento.values[0], # Já deve vir como date/datetime
+                df_paciente.data_nascimento.values[0],
                 df_paciente.cpf.values[0],
                 df_paciente.telefone.values[0]
             )
@@ -66,7 +64,7 @@ class ControllerPaciente:
             print("\n--- Paciente Inserido com Sucesso ---")
             print(novo_paciente.to_string())
             return novo_paciente
-
+        
     def atualizar_paciente(self) -> Paciente:
         # Atualiza os atributos de um Paciente existente, exceto o ID e CPF.
         # Cria uma nova conexão com o banco que permite alteração
