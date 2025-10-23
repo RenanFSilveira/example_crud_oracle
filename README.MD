@@ -85,6 +85,7 @@ Execução do Projeto no Linux
 
 Exemplos de Uso (Módulo OracleQueries)
 Consulta:
+```python
 from conexion.oracle_queries import OracleQueries
 
 query = "SELECT id_medico, nome FROM medico ORDER BY nome"
@@ -93,10 +94,14 @@ oracle.connect()
 df = oracle.sqlToDataFrame(query)
 print(df)
 
-Inserção:
+# Inserção:
 oracle = OracleQueries(can_write=True)
 oracle.connect()
 oracle.write("INSERT INTO medico (id_medico, nome) VALUES (1, 'Dr. João')")
+
+```
+
+
 
 ---
 
