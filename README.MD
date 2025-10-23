@@ -91,7 +91,7 @@ Execução do Projeto no Linux
    python src/principal.py
 ```
 6. Encerrar o ambiente virtual:
-``bash
+```bash
    deactivate
 ```
 
