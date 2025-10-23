@@ -34,35 +34,34 @@ Instale as dependências com:
 pip install -r src/requirements.txt
 
 ---
-
+```text
 Estrutura do Projeto
 .
 ├── diagrams/
-│   └── DIAGRAMA_RELACIONAL_PEDIDOS.pdf
+│   └── DIAGRAMA_RELACIONAL_PEDIDOS.pdf
 ├── sql/
-│   └── create_tables.sql
+│   └── create_tables.sql
 ├── src/
-│   ├── conexion/
-│   │   └── oracle_queries.py
-│   ├── controller/
-│   │   ├── controller_medico.py
-│   │   ├── controller_paciente.py
-│   │   └── controller_consulta.py
-│   ├── model/
-│   │   ├── medico.py
-│   │   ├── paciente.py
-│   │   └── consulta.py
-│   ├── reports/
-│   │   └── relatorios.py
-│   ├── utils/
-│   │   ├── config.py
-│   │   └── splash_screen.py
-│   ├── create_tables_and_records.py
-│   ├── principal.py
-│   ├── test.py
-│   └── requirements.txt
+│   ├── conexion/
+│   │   └── oracle_queries.py
+│   ├── controller/
+│   │   ├── controller_medico.py
+│   │   ├── controller_paciente.py
+│   │   └── controller_consulta.py
+│   ├── model/
+│   │   ├── medico.py
+│   │   ├── paciente.py
+│   │   └── consulta.py
+│   ├── reports/
+│   │   └── relatorios.py
+│   ├── utils/
+│   │   ├── config.py
+│   │   └── splash_screen.py
+│   ├── create_tables_and_records.py
+│   ├── principal.py
+│   ├── test.py
+│   └── requirements.txt
 └── README.md
-
 ---
 
 Execução do Projeto no Linux
