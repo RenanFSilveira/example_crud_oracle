@@ -1,129 +1,159 @@
-# Exemplo de Sistema em Python fazendo CRUD no Oracle
+# Sistema de Gestão de Consultas Médicas - Python + Oracle
+Disciplina: Banco de Dados
+Professor: Howard Roatti
+Instituição: FAESA
+Última atualização: Outubro/2025
+Vídeo de apresentação: https://youtu.be/wNuKxfriwNw
 
-Esse sistema de exemplo é composto por um conjunto de tabelas que representam pedidos de vendas, contendo tabelas como: clientes, fornecedores, produtos, pedidos e itens de pedido.
+Integrantes:
+Estevão Matos de Souza, Gabriel Araujo Ceruti Castro, Gabriel Araujo Valoni,
+Heitor Lopes Trindade Fadlalah, Renan Fortunato Silveira, Thiago Rosetti Miranda
+Turma: 4HC1A
 
-O sistema exige que as tabelas existam, então basta executar o script Python a seguir para criação das tabelas e preenchimento de dados de exemplos:
-```shell
-~$ python create_tables_and_records.py
-```
+---
 
-Para executar o sistema basta executar o script Python a seguir:
-```shell
-~$ python principal.py
-```
+Descrição do Projeto
+O Sistema de Gestão de Consultas Médicas tem como objetivo registrar médicos, pacientes e consultas realizadas, permitindo o controle das informações essenciais de cada entidade e a geração de relatórios sobre atendimentos e produtividade.
 
-Para que possa testar as conexões com o banco de dados Oracle e o módulo Conexion desenvolvido para esse projeto, basta executar o script Python a seguir:
-```shell
-~$ python test.py
-```
+Este projeto foi desenvolvido em Python, com integração direta ao banco de dados Oracle, simulando um sistema real de interface entre uma aplicação de backend e um banco de dados relacional.
 
-## Organização
-- [diagrams](diagrams): Nesse diretório está o [diagrama relacional](diagrams/DIAGRAMA_RELACIONAL_PEDIDOS.pdf) (lógico) do sistema.
-    * O sistema possui cinco entidades: PRODUTOS, CLIENTES, FORNECEDORES, PEDIDOS e ITENS_PEDIDO
-- [sql](sql): Nesse diretório estão os scripts para criação das tabelas e inserção de dados fictícios para testes do sistema
-    * Certifique-se de que o usuário do banco possui todos os privilégios antes de executar os scripts de criação, caso ocorra erro, execute o comando a seguir com o superusuário via SQL Developer: `GRANT ALL PRIVILEGES TO LABDATABASE;`
-    * [create_tables_pedidos.sql](sql/create_tables_pedidos.sql): script responsável pela criação das tabelas, relacionamentos e criação de permissão no esquema LabDatabase.
-    * [inserting_samples_records.sql](sql/inserting_samples_records.sql): script responsável pela inserção dos registros fictícios para testes do sistema.
-    * [inserting_samples_related_records.sql](sql/inserting_samples_related_records.sql): script responsável pela inserção dos registros fictícios de pedidos e itens de pedidos para testes do sistema utilizando blocos PL/SQL.
-- [src](src): Nesse diretório estão os scripts do sistema
-    * [conexion](src/conexion): Nesse repositório encontra-se o [módulo de conexão com o banco de dados Oracle](src/conexion/oracle_queries.py). Esse módulo possui algumas funcionalidades úteis para execução de instruções DML e DDL, sendo possível obter JSON, Matriz e Pandas DataFrame.
-      - Exemplo de utilização para consultas simples:
+O sistema implementa operações CRUD completas (Create, Read, Update, Delete) sobre as entidades Médico, Paciente e Consulta, além de dois relatórios obrigatórios:
+1. Relatório com funções agregadas (GROUP BY);
+2. Relatório com junção de tabelas (JOIN).
 
-        ```python
-        def listar_clientes(self, oracle:OracleQueries, need_connect:bool=False):
-            query = """
-                    select c.cpf
-                        , c.nome 
-                    from clientes c
-                    order by c.nome
-                    """
-            if need_connect:
-                oracle.connect()
-            print(oracle.sqlToDataFrame(query))
-        ```
-      - Exemplo de utilização para alteração de registros
+---
 
-        ```python
-        from conexion.oracle_queries import OracleQueries
-        def inserir_cliente(self) -> Cliente:
-            # Cria uma nova conexão com o banco que permite alteração
-            oracle = OracleQueries(can_write=True)
-            oracle.connect()
+Requisitos do Ambiente
+Software Necessário
+• Python 3.10+ instalado no sistema
+• Banco de Dados Oracle configurado e acessível
+• Oracle Instant Client instalado (veja instruções abaixo)
+• Dependências listadas no arquivo: src/requirements.txt
 
-            # Solicita ao usuario o novo CPF
-            cpf = input("CPF (Novo): ")
+Instale as dependências com:
+pip install -r src/requirements.txt
 
-            if self.verifica_existencia_cliente(oracle, cpf):
-                # Solicita ao usuario o novo nome
-                nome = input("Nome (Novo): ")
-                # Insere e persiste o novo cliente
-                oracle.write(f"insert into clientes values ('{cpf}', '{nome}')")
-                # Recupera os dados do novo cliente criado transformando em um DataFrame
-                df_cliente = oracle.sqlToDataFrame(f"select cpf, nome from clientes where cpf = '{cpf}'")
-                # Cria um novo objeto Cliente
-                novo_cliente = Cliente(df_cliente.cpf.values[0], df_cliente.nome.values[0])
-                # Exibe os atributos do novo cliente
-                print(novo_cliente.to_string())
-                # Retorna o objeto novo_cliente para utilização posterior, caso necessário
-                return novo_cliente
-            else:
-                print(f"O CPF {cpf} já está cadastrado.")
-                return None
-        ```
-      - Outros exemplos: [test.py](src/test.py)
-      - Caso esteja utilizando na máquina virtual antiga, você precisará alterar o método connect de:
-          ```python
-          self.conn = cx_Oracle.connect(user=self.user,
-                                  password=self.passwd,
-                                  dsn=self.connectionString()
-                                  )
-          ```
-        Para:
-          ```python
-          self.conn = cx_Oracle.connect(user=self.user,
-                                  password=self.passwd,
-                                  dsn=self.connectionString(in_container=True)
-                                  )
-          ```
-    * [controller](src/controller/): Nesse diretório encontram-sem as classes controladoras, responsáveis por realizar inserção, alteração e exclusão dos registros das tabelas.
-    * [model](src/model/): Nesse diretório encontram-ser as classes das entidades descritas no [diagrama relacional](diagrams/DIAGRAMA_RELACIONAL_PEDIDOS.pdf)
-    * [reports](src/reports/) Nesse diretório encontra-se a [classe](src/reports/relatorios.py) responsável por gerar todos os relatórios do sistema
-    * [sql](src/sql/): Nesse diretório encontram-se os scripts utilizados para geração dos relatórios a partir da [classe relatorios](src/reports/relatorios.py)
-    * [utils](src/utils/): Nesse diretório encontram-se scripts de [configuração](src/utils/config.py) e automatização da [tela de informações iniciais](src/utils/splash_screen.py)
-    * [create_tables_and_records.py](src/create_tables_and_records.py): Script responsável por criar as tabelas e registros fictícios. Esse script deve ser executado antes do script [principal.py](src/principal.py) para gerar as tabelas, caso não execute os scripts diretamente no SQL Developer ou em alguma outra IDE de acesso ao Banco de Dados.
-    * [principal.py](src/principal.py): Script responsável por ser a interface entre o usuário e os módulos de acesso ao Banco de Dados. Deve ser executado após a criação das tabelas.
+---
 
-### Bibliotecas Utilizadas
-- [requirements.txt](src/requirements.txt): `pip install -r requirements.txt`
+Estrutura do Projeto
+.
+├── diagrams/
+│   └── DIAGRAMA_RELACIONAL_PEDIDOS.pdf
+├── sql/
+│   └── create_tables.sql
+├── src/
+│   ├── conexion/
+│   │   └── oracle_queries.py
+│   ├── controller/
+│   │   ├── controller_medico.py
+│   │   ├── controller_paciente.py
+│   │   └── controller_consulta.py
+│   ├── model/
+│   │   ├── medico.py
+│   │   ├── paciente.py
+│   │   └── consulta.py
+│   ├── reports/
+│   │   └── relatorios.py
+│   ├── utils/
+│   │   ├── config.py
+│   │   └── splash_screen.py
+│   ├── create_tables_and_records.py
+│   ├── principal.py
+│   ├── test.py
+│   └── requirements.txt
+└── README.md
 
-#### Em caso de problemas com a execução dos software dando a seguinte mensagem `ORA-28001: the password has expired`, execute as linhas de comando a seguir no Oracle:
-- `ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;`
-- `ALTER USER labdatabase IDENTIFIED BY "labDatabase2022";`
-- `ALTER USER labdatabase IDENTIFIED BY  "labDatabase2022";`
+---
 
-### Instalando Oracle InstantClient
-- Baixe a versão do [InstantClient](https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html) de acordo com a versão do Banco de Dados
-- Caso esteja utilizando uma distribuição Linux baseado em Debian, será necessário executar o comando a seguir para converter o arquivo .rpm para .deb.
-  ```shell
-  sudo alien --scripts oracle-instantclient18.5-basic-18.5.0.0.0-3.x86_64.rpm
-  ```
-- Descompacte o arquivo e será gerado um diretório em um diretório de fácil acesso.
-- Mova os diretórios lib e share para dentro do diretório do InstantClient
-  ```shell
-  sudo mv lib /usr/local/oracle/instantclient_18_5/
-  ```
-  
-  ```shell
-  sudo mv share instantclient_18_5/
-  ```
-- Edite o arquivo `.bash_profile` incluindo as linhas a seguir ao final do arquivo:
-  ```shell
-  export ORACLE_HOME=/usr/local/oracle/instantclient_18_5/lib/oracle/18.5/client64
-  export LD_LIBRARY_PATH=$ORACLE_HOME/lib
-  export PATH=$PATH:$ORACLE_HOME/bin
-  export PATH
-  ```
+Execução do Projeto no Linux
+1. Clonar o repositório do GitHub:
+   git clone https://github.com/RenanFSilveira/example_crud_oracle
+   cd example_crud_oracle
+2. Criar e ativar ambiente virtual (recomendado):
+   python3 -m venv .venv
+   source .venv/bin/activate
+3. Instalar as dependências:
+   pip install -r src/requirements.txt
+4. Criar tabelas e inserir registros de exemplo:
+   python src/create_tables_and_records.py
+5. Executar o sistema principal (menu interativo):
+   python src/principal.py
+6. Encerrar o ambiente virtual:
+   deactivate
 
-## Contato
-- [LinkedIn](https://linkedin.com/in/howardroatti)
-- [E-Mail](mailto:howardcruzroatti@gmail.com)
+---
+
+Exemplos de Uso (Módulo OracleQueries)
+Consulta:
+from conexion.oracle_queries import OracleQueries
+
+query = "SELECT id_medico, nome FROM medico ORDER BY nome"
+oracle = OracleQueries()
+oracle.connect()
+df = oracle.sqlToDataFrame(query)
+print(df)
+
+Inserção:
+oracle = OracleQueries(can_write=True)
+oracle.connect()
+oracle.write("INSERT INTO medico (id_medico, nome) VALUES (1, 'Dr. João')")
+
+---
+
+Relatórios Implementados
+1. Relatório de Consultas por Médico (Agrupamento / GROUP BY):
+   • Exibe a quantidade total de consultas realizadas por cada médico.
+2. Relatório de Consultas Detalhadas (Junção / JOIN):
+   • Mostra informações completas das consultas com o nome do médico e do paciente.
+
+---
+
+Instalação do Oracle Instant Client (Linux)
+1. Baixe a versão compatível em:
+   https://www.oracle.com/database/technologies/instant-client.html
+2. Se o arquivo for .rpm, converta e instale:
+   sudo apt install alien
+   sudo alien --scripts oracle-instantclient18.5-basic-18.5.0.0.0-3.x86_64.rpm
+3. Configure as variáveis de ambiente:
+   sudo mkdir -p /usr/local/oracle/instantclient_18_5/
+   sudo mv lib /usr/local/oracle/instantclient_18_5/
+   echo 'export ORACLE_HOME=/usr/local/oracle/instantclient_18_5' >> ~/.bash_profile
+   echo 'export LD_LIBRARY_PATH=$ORACLE_HOME/lib' >> ~/.bash_profile
+   echo 'export PATH=$PATH:$ORACLE_HOME/bin' >> ~/.bash_profile
+   source ~/.bash_profile
+
+---
+
+Solução de Problemas Comuns
+Erro: ORA-28001: the password has expired
+Execute os comandos abaixo no Oracle (como DBA):
+ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
+ALTER USER labdatabase IDENTIFIED BY "labDatabase2022";
+
+---
+
+Documentação de Execução (Ambiente MV - FAESA)
+Esse procedimento foi feito usando a MV fornecida em aula.
+
+1. Clonar o repositório:
+   https://github.com/RenanFSilveira/example_crud_oracle
+2. Subindo o container do banco de dados:
+   cd database_services/
+   docker compose up -d oracle
+3. Abrindo a conexão no DBeaver:
+   Usar a conexão 'LABDATABASE ORACLE' que vem criada por padrão na MV.
+4. Ativando o ambiente virtual de desenvolvimento:
+   cd ~
+   source Workspace/.venv/bin/activate
+5. Criação das tabelas e execução do sistema:
+   cd example_crud_oracle/src/
+   python create_tables_and_records.py
+   python principal.py
+
+A partir desse ponto, a aplicação faz o CRUD completo via terminal, e todas as alterações são salvas e persistem no banco de dados Oracle.
+
+---
+
+Observações Finais
+Este projeto foi desenvolvido com o propósito de demonstrar a integração entre Python e Oracle Database, aplicando o modelo de entidades e relacionamentos do domínio médico-paciente-consulta.
+A estrutura modular e o uso de operações CRUD completas permitem expandir facilmente o sistema para outros contextos de gestão de informações.
