@@ -23,15 +23,17 @@ O sistema implementa operações CRUD completas (Create, Read, Update, Delete) s
 
 ---
 
-Requisitos do Ambiente
-Software Necessário
-• Python 3.10+ instalado no sistema
-• Banco de Dados Oracle configurado e acessível
-• Oracle Instant Client instalado (veja instruções abaixo)
-• Dependências listadas no arquivo: src/requirements.txt
+Requisitos do Ambiente  
+Software Necessário  
+• Python 3.10+ instalado no sistema  
+• Banco de Dados Oracle configurado e acessível  
+• Oracle Instant Client instalado (veja instruções abaixo)  
+• Dependências listadas no arquivo: src/requirements.txt  
 
-Instale as dependências com:
+Instale as dependências com:  
+```bash
 pip install -r src/requirements.txt
+```
 
 ---
 ```text
@@ -65,21 +67,33 @@ Estrutura do Projeto
 ```
 ---
 
-Execução do Projeto no Linux
-1. Clonar o repositório do GitHub:
+Execução do Projeto no Linux  
+1. Clonar o repositório do GitHub:  
+   ```bash
    git clone https://github.com/RenanFSilveira/example_crud_oracle
    cd example_crud_oracle
+```
 2. Criar e ativar ambiente virtual (recomendado):
+```bash
    python3 -m venv .venv
    source .venv/bin/activate
+```
 3. Instalar as dependências:
+```bash
    pip install -r src/requirements.txt
+```
 4. Criar tabelas e inserir registros de exemplo:
+```bash
    python src/create_tables_and_records.py
+```
 5. Executar o sistema principal (menu interativo):
+```bash
    python src/principal.py
+```
 6. Encerrar o ambiente virtual:
+``bash
    deactivate
+```
 
 ---
 
@@ -105,60 +119,74 @@ oracle.write("INSERT INTO medico (id_medico, nome) VALUES (1, 'Dr. João')")
 
 ---
 
-Relatórios Implementados
-1. Relatório de Consultas por Médico (Agrupamento / GROUP BY):
-   • Exibe a quantidade total de consultas realizadas por cada médico.
-2. Relatório de Consultas Detalhadas (Junção / JOIN):
-   • Mostra informações completas das consultas com o nome do médico e do paciente.
+Relatórios Implementados  
+1. Relatório de Consultas por Médico (Agrupamento / GROUP BY):  
+   • Exibe a quantidade total de consultas realizadas por cada médico.  
+2. Relatório de Consultas Detalhadas (Junção / JOIN):  
+   • Mostra informações completas das consultas com o nome do médico e do paciente.  
 
 ---
 
-Instalação do Oracle Instant Client (Linux)
-1. Baixe a versão compatível em:
-   https://www.oracle.com/database/technologies/instant-client.html
-2. Se o arquivo for .rpm, converta e instale:
+Instalação do Oracle Instant Client (Linux)  
+1. Baixe a versão compatível em:  
+   https://www.oracle.com/database/technologies/instant-client.html  
+2. Se o arquivo for .rpm, converta e instale:  
+```bash
    sudo apt install alien
    sudo alien --scripts oracle-instantclient18.5-basic-18.5.0.0.0-3.x86_64.rpm
-3. Configure as variáveis de ambiente:
+```
+3. Configure as variáveis de ambiente:  
+```bash
    sudo mkdir -p /usr/local/oracle/instantclient_18_5/
    sudo mv lib /usr/local/oracle/instantclient_18_5/
    echo 'export ORACLE_HOME=/usr/local/oracle/instantclient_18_5' >> ~/.bash_profile
    echo 'export LD_LIBRARY_PATH=$ORACLE_HOME/lib' >> ~/.bash_profile
    echo 'export PATH=$PATH:$ORACLE_HOME/bin' >> ~/.bash_profile
    source ~/.bash_profile
+```
 
 ---
 
-Solução de Problemas Comuns
-Erro: ORA-28001: the password has expired
-Execute os comandos abaixo no Oracle (como DBA):
-ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
-ALTER USER labdatabase IDENTIFIED BY "labDatabase2022";
+Solução de Problemas Comuns  
+Erro: ORA-28001: the password has expired  
+Execute os comandos abaixo no Oracle (como DBA):  
+```SQL
+ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;  
+ALTER USER labdatabase IDENTIFIED BY "labDatabase2022";  
+```
 
 ---
 
-Documentação de Execução (Ambiente MV - FAESA)
-Esse procedimento foi feito usando a MV fornecida em aula.
+Documentação de Execução (Ambiente MV - FAESA)  
+Esse procedimento foi feito usando a MV fornecida em aula.  
 
-1. Clonar o repositório:
+1. Clonar o repositório:  
+```bash
    https://github.com/RenanFSilveira/example_crud_oracle
+```
 2. Subindo o container do banco de dados:
+```bash
    cd database_services/
    docker compose up -d oracle
-3. Abrindo a conexão no DBeaver:
-   Usar a conexão 'LABDATABASE ORACLE' que vem criada por padrão na MV.
-4. Ativando o ambiente virtual de desenvolvimento:
+```
+3. Abrindo a conexão no DBeaver:  
+   Usar a conexão 'LABDATABASE ORACLE' que vem criada por padrão na MV.  
+4. Ativando o ambiente virtual de desenvolvimento:  
+```bash
    cd ~
    source Workspace/.venv/bin/activate
+```
 5. Criação das tabelas e execução do sistema:
+```b
    cd example_crud_oracle/src/
    python create_tables_and_records.py
    python principal.py
+```
 
-A partir desse ponto, a aplicação faz o CRUD completo via terminal, e todas as alterações são salvas e persistem no banco de dados Oracle.
+A partir desse ponto, a aplicação faz o CRUD completo via terminal, e todas as alterações são salvas e persistem no banco de dados Oracle.  
 
 ---
 
-Observações Finais
-Este projeto foi desenvolvido com o propósito de demonstrar a integração entre Python e Oracle Database, aplicando o modelo de entidades e relacionamentos do domínio médico-paciente-consulta.
-A estrutura modular e o uso de operações CRUD completas permitem expandir facilmente o sistema para outros contextos de gestão de informações.
+Observações Finais  
+Este projeto foi desenvolvido com o propósito de demonstrar a integração entre Python e Oracle Database, aplicando o modelo de entidades e relacionamentos do domínio médico-paciente-consulta.  
+A estrutura modular e o uso de operações CRUD completas permitem expandir facilmente o sistema para outros contextos de gestão de informações.  
