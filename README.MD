@@ -1,25 +1,25 @@
 # Sistema de Gestão de Consultas Médicas - Python + Oracle
-Disciplina: Banco de Dados
-Professor: Howard Roatti
-Instituição: FAESA
-Última atualização: Outubro/2025
-Vídeo de apresentação: https://youtu.be/wNuKxfriwNw
+Disciplina: Banco de Dados  
+Professor: Howard Roatti  
+Instituição: FAESA  
+Última atualização: Outubro/2025  
+Vídeo de apresentação: https://youtu.be/wNuKxfriwNw  
 
 Integrantes:
-Estevão Matos de Souza, Gabriel Araujo Ceruti Castro, Gabriel Araujo Valoni,
-Heitor Lopes Trindade Fadlalah, Renan Fortunato Silveira, Thiago Rosetti Miranda
-Turma: 4HC1A
+Estevão Matos de Souza, Gabriel Araujo Ceruti Castro, Gabriel Araujo Valoni,  
+Heitor Lopes Trindade Fadlalah, Renan Fortunato Silveira, Thiago Rosetti Miranda  
+Turma: 4HC1A  
 
 ---
 
-Descrição do Projeto
+Descrição do Projeto  
 O Sistema de Gestão de Consultas Médicas tem como objetivo registrar médicos, pacientes e consultas realizadas, permitindo o controle das informações essenciais de cada entidade e a geração de relatórios sobre atendimentos e produtividade.
 
 Este projeto foi desenvolvido em Python, com integração direta ao banco de dados Oracle, simulando um sistema real de interface entre uma aplicação de backend e um banco de dados relacional.
 
-O sistema implementa operações CRUD completas (Create, Read, Update, Delete) sobre as entidades Médico, Paciente e Consulta, além de dois relatórios obrigatórios:
-1. Relatório com funções agregadas (GROUP BY);
-2. Relatório com junção de tabelas (JOIN).
+O sistema implementa operações CRUD completas (Create, Read, Update, Delete) sobre as entidades Médico, Paciente e Consulta, além de dois relatórios obrigatórios:  
+1. Relatório com funções agregadas (GROUP BY);  
+2. Relatório com junção de tabelas (JOIN).  
 
 ---
 
