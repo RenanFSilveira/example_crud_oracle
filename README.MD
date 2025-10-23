@@ -62,6 +62,7 @@ Estrutura do Projeto
 │   ├── test.py
 │   └── requirements.txt
 └── README.md
+```
 ---
 
 Execução do Projeto no Linux
