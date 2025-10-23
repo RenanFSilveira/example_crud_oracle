@@ -69,7 +69,7 @@ Estrutura do Projeto
 
 Execução do Projeto no Linux  
 1. Clonar o repositório do GitHub:  
-   ```bash
+```bash
    git clone https://github.com/RenanFSilveira/example_crud_oracle
    cd example_crud_oracle
 ```
